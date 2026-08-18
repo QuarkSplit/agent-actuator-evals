@@ -1,0 +1,75 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent-actuator-evals"
+version = "0.1.0"
+description = "Clean-room evaluations for agents operating simulated physical systems"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Petko Petsev", email = "petko.petzev@gmail.com" },
+]
+keywords = ["ai-safety", "agents", "evaluation", "inspect-ai", "simulation"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Typing :: Typed",
+]
+dependencies = [
+  "inspect-ai==0.3.259",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy==1.17.1",
+  "pytest==8.4.1",
+  "pytest-cov==6.2.1",
+  "ruff==0.12.9",
+]
+
+[project.scripts]
+agent-actuator-benchmark = "agent_actuator_evals.cli:main"
+
+[project.entry-points.inspect_ai]
+agent_actuator_evals = "agent_actuator_evals._registry"
+
+[project.urls]
+Homepage = "https://github.com/QuarkSplit/agent-actuator-evals"
+Repository = "https://github.com/QuarkSplit/agent-actuator-evals"
+Issues = "https://github.com/QuarkSplit/agent-actuator-evals/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agent_actuator_evals"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/docs", "/README.md", "/LICENSE", "/pyproject.toml"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+packages = ["agent_actuator_evals"]
+follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = ["agent_actuator_evals.inspect_task"]
+# Inspect's runtime registration decorators are intentionally opaque when external
+# imports are skipped; all underlying callables retain explicit protocol types.
+disable_error_code = ["misc"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers --cov=agent_actuator_evals --cov-report=term-missing --cov-fail-under=90"
+testpaths = ["tests"]
