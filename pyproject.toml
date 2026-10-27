@@ -23,7 +23,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "inspect-ai==0.3.260",
+  "inspect-ai==0.3.283",
 ]
 
 [project.optional-dependencies]
